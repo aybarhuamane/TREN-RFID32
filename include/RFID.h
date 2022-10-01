@@ -1,22 +1,14 @@
 #include <MFRC522.h>
+
 //#include <RED.h>
-#define _CONFIG1 
+
 #define SECONDS 1000UL
-#define PERIODO_SENSADO 5*SECONDS   // sensado cada 5 seconds
+#define PERIODO_SENSADO 1*SECONDS   // sensado cada 5 seconds
 unsigned long tiempo=0;             // tiempo grabado
 byte ActualUID[4];
 
+String miActualUID;
 
-#if defined _CONFIG1 
-        //RFID : SPIClass MRFID(HSPI);  // DENTRO DE LA LIBRERIA MFRC522.cpp
-        extern SPIClass MRFID;
-        #define RST_PIN_H 27  
-        #define SS_PIN_H 2
-        #define CLK_PIN_H 14
-        #define MOSI_PIN_H 13
-        #define MISO_PIN_H 12     
-
-#endif
 
 MFRC522 mfrc522(SS_PIN_H, RST_PIN_H); // Create MFRC522 instance
 
@@ -46,7 +38,7 @@ void loop_rfid(){
                         {
                                 
                                 Serial.println(F("\nCard UID:"));
-                                String miActualUID="";
+                                miActualUID="";                         //limpia el UID
                                 for (byte i = 0; i < mfrc522.uid.size; i++)
                                 {
                                         Serial.print(mfrc522.uid.uidByte[i] < 0x10 ? " 0" : " ");
@@ -58,14 +50,17 @@ void loop_rfid(){
                                         miActualUID = miActualUID  + String(mfrc522.uid.uidByte[i], HEX);
            
                                         //ActualUID[i] = mfrc522.uid.uidByte[i];
-                                        
+                                        //digitalWrite(ACT_MONGO, HIGH );       
                                 }
 
                                 //String miActualUID = String((char *)ActualUID);
-                                Serial.println("Se envio:"+ miActualUID);
-                                client.publish(TOPICO_PUB_DATA2,miActualUID.c_str()); //CONSULTAMOS A MONGO EL DATO LEIDO
+                                Serial.println("\nSe envio:"+ miActualUID);
+                                client.publish(TOPICO_PUB_DATA3,miActualUID.c_str()); //CONSULTAMOS A MONGO EL DATO LEIDO
                                 tiempo = millis();
+                                               
+                              // bocina(1);// HACE RETARDO
                         }
+
                 }
         }
 }

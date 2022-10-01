@@ -26,8 +26,11 @@ char server[] = "www.google.com";    // name address for Google (using DNS)
 #define CLIENT_ID       "JEZIEL_78233"
 #define INTERVAL        3000 // 3 sec delay between publishing
 
-IPAddress ip(192, 168, 1, 18);
-IPAddress myDns(192, 168, 1, 1);
+// IPAddress ip(192, 168, 1, 18);
+// IPAddress myDns(192, 168, 1, 1);
+
+IPAddress ip(172, 19, 34, 17); //172.19.34.17
+IPAddress myDns(172,19,34,1); //  172.19.34.1
 
 // MQTT
 #define SERVER "iotx.cloux.site"
@@ -59,15 +62,15 @@ void sendData(void);
 void setup() {
 
   Serial.begin(115200);
-  RED.begin(CLK_PIN_H, MISO_PIN_H, MOSI_PIN_H, SS_PIN_H); // //CLK,MISO,MOIS,SS.
-  RED.begin(SS_PIN_H, OUTPUT);
+  // RED.begin(CLK_PIN_H, MISO_PIN_H, MOSI_PIN_H, SS_PIN_H); // //CLK,MISO,MOIS,SS.
+  // RED.begin(SS_PIN_H, OUTPUT);
 
 
 
   while (!Serial) {
     ; // wait for serial port to connect. Needed for native USB port only
   }
-
+  Ethernet.init(33); 
   Serial.println("Initialize Ethernet with DHCP:");
   if (Ethernet.begin(mac) == 0) {
     Serial.println("Failed to configure Ethernet using DHCP");
