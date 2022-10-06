@@ -37,6 +37,6 @@ PINES()
     digitalWrite(IND1_MOONGO,LOW); //INICIA EN OFF
     digitalWrite(16,LOW); //SALIDA PIC
     digitalWrite(17,LOW); // SALIDA PIC
-    digitalWrite(ACT_MONGO,LOW);
+    digitalWrite(ACT_MONGO,LOW); // relay
     //init_lcd("Iniciando...",1);
 }

@@ -15,15 +15,12 @@
 
 const char* ssid = "Wifi_Comedor";
 const char* password = "movistar123";
-const char* mqtt_server = "192.168.1.81";
-
+//const char* mqtt_server = "192.168.1.81";
+const char *mqtt_server = "proyect.cloux.site";
 //const char* mqtt_server = "localhost";
 //const char* mqtt_server = "192.168.173.143";
 //const char* mqtt_server = "172.19.34.17";
 
-
-#define DEVICE_LABEL   "casa/wifi/" //topico base 
-#define TOPICO_CONSUMO     DEVICE_LABEL "consumo" 
 
 const char *mqtt_user = "device_rfid"; //ssid de la red
 const char *mqtt_pass = "device"; //contraseña de la red
@@ -43,6 +40,10 @@ String clientId = "device_rfid2";
 
 #define TOPICO_PUB_DATA2 TOPICO_RAIZ "buscar2"
 #define TOPICO_SUB_DATA2 TOPICO_PUB_DATA2
+
+//new collection  client 26/09
+#define TOPICO_PUB_DATA3 TOPICO_RAIZ "buscar3"
+#define TOPICO_SUB_DATA3 TOPICO_RAIZ "grab"
 
 //MILLS
 long previousMillis;
@@ -78,8 +79,10 @@ void reconnect() {
      // print_lcdc("SERVER CONNECTED !");
       // INDICA CONEXION MQTT EXITOSA
       //parpadeo(false); 
-      client.subscribe(TOPICO_SUB_DATA1);//Suscripcion a topico
+     client.subscribe(TOPICO_SUB_DATA1);//Suscripcion a topico
       client.subscribe(TOPICO_SUB_DATA2);
+      client.subscribe(TOPICO_SUB_DATA3);
+     // client.subscribe(TOPICO_PUB_DATA3); //activar si usa NA RELAY
       //client.publish(TOPICO_PUB_DATA1, "BIEVENIDO");
 
     } else {
@@ -87,7 +90,7 @@ void reconnect() {
       Serial.println(client.state());//Imprime error de la conexion
       Serial.print(" Se intentara denuevo en 5 segundos");//Imprime cadena
 
-      //delay(2000);//Espera 2 segundos para seguir intentando conectarse 
+      delay(2000);//Espera 2 segundos para seguir intentando conectarse 
       incremento+=1;   //-> se movio al indicador.h
 
      // print_lcd("Reconnecting..");
@@ -101,7 +104,6 @@ void reconnect() {
     }
   }
 }
-
 
 void main_ethernet() {
 

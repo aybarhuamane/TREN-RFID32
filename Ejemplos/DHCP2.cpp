@@ -18,16 +18,16 @@ byte mac[] = { 0xDE, 0xAD, 0xBE, 0xEF, 0xFE, 0xED };
 // #define MYDNS 192,168,1,1
 // #define MYGW 192,168,1,1
  
-// #define MYIPADDR 10,10,0,100
-// #define MYIPMASK 255,255,255,0
-// #define MYDNS 10,10,0,1
-// #define MYGW 10,10,0,1
+ #define MYIPADDR 10,10,0,100
+ #define MYIPMASK 255,255,255,0
+ #define MYDNS 10,10,0,1
+ #define MYGW 10,10,0,1
 
 
-#define MYIPADDR 172,19,40,57
-#define MYIPMASK 255,255,255,0
-#define MYDNS 172,19,40,1
-#define MYGW 172,19,40,1
+//#define MYIPADDR 172,19,40,57
+//#define MYIPMASK 255,255,255,0
+//#define MYDNS 172,19,40,1
+//#define MYGW 172,19,40,1
 
 
 

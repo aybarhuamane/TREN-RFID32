@@ -4,7 +4,21 @@
 #include "PubSubClient.h"
 
 //#define PLANTA3 // LABORAT
-#define CASA2
+//#define PLANTA2
+
+byte mac[] = { 0xDE, 0xAD, 0xBE, 0xEF, 0xFE, 0xED };
+// #define MYIPADDR 172,19,43,178
+// #define MYIPMASK 255,255,255,0
+// #define MYDNS 172,19,34,1
+// #define MYGW 172,19,34,1
+
+ #define MYIPADDR 10,10,0,42
+ #define MYIPMASK 255,255,255,0
+ #define MYDNS 10,10,0,1
+ #define MYGW 10,10,0,1
+const char *mqtt_server = "10.10.0.40";
+
+
 #if defined PLANTA
 byte mac[] = { 0xDE, 0xAD, 0xBE, 0xEF, 0xFE, 0xED };
 
@@ -28,7 +42,7 @@ const char *mqtt_server = "172.19.34.17";  // SERA LA IP DONDE ESTA ALOJADO EL S
 byte mac[] = { 0xDE, 0xAD, 0xBE, 0xEF, 0xFE, 0xED };
 IPAddress ip(10,10,0,51); 
 IPAddress myDns(10,10,0,1);
-const char *mqtt_server = "10.10.0.52";
+const char *mqtt_server = "10.10.0.40";
 #elif defined PLANTA3
 byte mac[] = { 0xDE, 0xAD, 0xBE, 0xEF, 0xFE, 0xED };
 IPAddress ip(172,19,40,57);  // 169.254.93.46
@@ -54,6 +68,9 @@ IPAddress myDns(10,10,0,1);
 // MQTT
 // const char *mqtt_server = "192.168.1.79";
 const char *mqtt_server = "10.10.0.100";
+
+
+
 #endif
 
 
@@ -79,7 +96,7 @@ String clientId = "device_rfid2";
 
 //new collection  client 26/09
 #define TOPICO_PUB_DATA3 TOPICO_RAIZ "buscar3"
-#define TOPICO_SUB_DATA3 TOPICO_RAIZ "encontrado3"
+#define TOPICO_SUB_DATA3 TOPICO_RAIZ  "grab"//"encontrado3"
 
 
 //MILLS
@@ -138,11 +155,18 @@ void main_ethernet()
           // IPAddress dns(MYDNS);
           // IPAddress gw(MYGW);
           // IPAddress sn(MYIPMASK);
-          // Ethernet.begin(mac, ip, dns, gw, sn);
 
+                IPAddress ip(MYIPADDR);
+                IPAddress dns(MYDNS);
+                IPAddress gw(MYGW);
+                IPAddress sn(MYIPMASK);
+
+           Ethernet.begin(mac, ip, dns, gw, sn);
+          // Ethernet.begin(mac, ip);
           // Serial.println("STATIC OK!");
           // Ethernet.begin(mac, ip);
-         // Ethernet.begin(mac, ip, myDns);
+        //  Ethernet.begin(mac, ip, myDns);
+
 
           Serial.print("MY IP address:");
           Serial.println(Ethernet.localIP());

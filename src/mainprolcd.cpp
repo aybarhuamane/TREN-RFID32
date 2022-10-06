@@ -60,9 +60,13 @@ void loop()
     {
         reconnect(); // Invoca la funcion "reconnect"
     }
-    client.loop();
+    
     if(client.state()== 0){
     loop_rfid();
     relay_NC(); //mongo.h
     }
+
+    client.loop();
+
+    //Serial.println(digitalRead(ACT_MONGO));
 }

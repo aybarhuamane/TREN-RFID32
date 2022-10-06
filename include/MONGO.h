@@ -1,10 +1,10 @@
 
 #include <Separador.h>
 
-bool stado = true;
- bool act = true;
+
+bool act = true;
 unsigned long t_m = 0;
-bool grab=false;
+
 //#define ANTIGUO_PY   
 #ifndef ANTIGUO_PY
   #define NUEVO_PY
@@ -94,35 +94,34 @@ void callback_mongo(char *topic, byte *payload, unsigned int length)
   String miTopic = String(topic);             // Crea objeto de la clase String con el contenido de topic
   String miPayload = String((char *)payload); // Crea objeto de la clase String con el contenido de payload
 
-  
-  if (miTopic.equals("data/buscar3"))
-  {
-    act = true;
-    t_m = millis();
-    //  Serial.println("TARJETA  ACCEDIDA");
-  }
-
-    if (miTopic.equals("data/encontrado3"))
+    if (miTopic.equals("data/grab"))
     { // la data regresa por este tramo
-     
-      if ( miPayload.equals("1")) // BLACKLIST
+    
+      if ( miPayload.equals("0"))
       {
-       digitalWrite(ACT_MONGO, LOW); //RELAY_NC 
-       act = false;
-       t_m = millis();
-
-        Serial.println("tarjeta bloqueada");
+        Serial.println("tarjeta No bloqueada \n");
+        //RELAY CERRADO
+        act =true;
+        t_m = millis();
+      }
+      else if ( miPayload.equals("1")) // BLACKLIST
+      {
+       
+        Serial.println("tarjeta bloqueada \n");
         //  Serial.print("TARJETA ACEPTADA");
         //  print_lcdc("TARJETA ACEPTADA");
-
-
-      //digitalWrite(ACT_MONGO, HIGH); //RELAY_NA- sigue abierto
-       digitalWrite(ACT_MONGO, LOW); //RELAY_NC 
+       //digitalWrite(ACT_MONGO, HIGH); //RELAY_NA- sigue abierto
+       digitalWrite(ACT_MONGO, LOW); //RELAY_NC  ABIERTO
        act = false;
+       t_m = millis();
       }
-    t_m = millis();
-    }
-  }
+   
+    // Serial.println("STADO RELAY: " + String(digitalRead(ACT_MONGO))  );
+    //      digitalRead(ACT_MONGO) == 0 ? Serial.println("ABIERTO") : Serial.println("CERRADO") ;
+   }
+   
+      
+}
   // END CALLBACK
 #endif
 void relay_NA()
@@ -132,12 +131,13 @@ void relay_NA()
       
     }
         //STADO GENERAL    
-          if(millis() - t_m > 5000UL)
+          if(millis() - t_m > 1500UL)
       {
           t_m = millis(); // SETEAMOS
           digitalWrite(ACT_MONGO,HIGH); //ABRE RELAY
           act = false;
       }
+
 }
 
 
@@ -145,15 +145,16 @@ void relay_NC()
 {     //PIN.h init  LOW = RELAY CERRADO
       if(act){
       digitalWrite(ACT_MONGO, HIGH); // CIERRA RFID2 SE MANTIENE
-      
+      // digitalRead(ACT_MONGO) == 0 ? Serial.println("ABIERTO") : Serial.println("CERRADO") ;
+      //despues de 2 segundos se resetea cambia  act = low
     }
-       // STADO GENERAL    AL INICIAR DESPUES DE 2SEG SE EJECUTA
-          if(millis() - t_m > 5000UL)
+      // STADO GENERAL    AL INICIAR DESPUES DE 2SEG SE EJECUTA
+          if(millis() - t_m > 1500UL) //EL TIEMPO QUE SE MANTENDRA ABIERTO  LUEGO SE RESETEARA
       {
           t_m = millis(); // SETEAMOS
           digitalWrite(ACT_MONGO,LOW); //ABIERTO RELAY
           //Serial.println("SETEAMOS");
-          act = false;
+         act = false;
       }
 }
 
