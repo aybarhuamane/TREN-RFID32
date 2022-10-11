@@ -6,24 +6,22 @@
 //const char* mqtt_server = "192.168.173.143";
 //const char* mqtt_server = "172.19.34.17";
 
-// const char* ssid = "LINEA1_PRIVADO";
-// const char* password = "M3tr0deL1m@2#17";
+ const char* ssid = "LINEA1_PRIVADO";
+ const char* password = "M3tr0deL1m@2#17";
 
 
-// const char* ssid = "MOVISTAR_2019";
-// const char* password = "movistar123$+";
+ //const char* ssid = "MOVISTAR_2019";
+ //const char* password = "movistar123$+";
 
-const char* ssid = "Wifi_Comedor";
-const char* password = "movistar123";
+//const char* ssid = "Wifi_Comedor";
+//const char* password = "movistar123";
 //const char* mqtt_server = "192.168.1.81";
-const char *mqtt_server = "proyect.cloux.site";
+//const char *mqtt_server = "192.168.16.101";
 //const char* mqtt_server = "localhost";
 //const char* mqtt_server = "192.168.173.143";
-//const char* mqtt_server = "172.19.34.17";
-
-
-const char *mqtt_user = "device_rfid"; //ssid de la red
-const char *mqtt_pass = "device"; //contraseña de la red
+const char* mqtt_server = "172.19.34.200";
+const char *mqtt_user = "device-rfid"; //ssid de la red
+const char *mqtt_pass = "device$+"; //contraseña de la red
 
 
 //PubSubClient mqttClient;
@@ -44,7 +42,7 @@ String clientId = "device_rfid2";
 //new collection  client 26/09
 #define TOPICO_PUB_DATA3 TOPICO_RAIZ "buscar3"
 #define TOPICO_SUB_DATA3 TOPICO_RAIZ "grab"
-
+#define TOPICO_SUB_DATA4 TOPICO_RAIZ "grab2"
 //MILLS
 long previousMillis;
 unsigned long beginMicros, endMicros;
@@ -82,6 +80,7 @@ void reconnect() {
      client.subscribe(TOPICO_SUB_DATA1);//Suscripcion a topico
       client.subscribe(TOPICO_SUB_DATA2);
       client.subscribe(TOPICO_SUB_DATA3);
+      client.subscribe(TOPICO_SUB_DATA4);
      // client.subscribe(TOPICO_PUB_DATA3); //activar si usa NA RELAY
       //client.publish(TOPICO_PUB_DATA1, "BIEVENIDO");
 

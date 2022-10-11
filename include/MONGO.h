@@ -115,7 +115,21 @@ void callback_mongo(char *topic, byte *payload, unsigned int length)
        act = false;
        t_m = millis();
       }
-   
+
+    }
+
+    else if (miTopic.equals("data/grab2"))
+    { // la data regresa por este tramo  
+    Serial.println("LEER GRAB \n");
+      if (miPayload.equals("0"))
+      {
+        Serial.println("tarjeta No bloqueada2 \n");
+        //RELAY CERRADO
+        act =true;
+        t_m = millis();
+      }
+
+
     // Serial.println("STADO RELAY: " + String(digitalRead(ACT_MONGO))  );
     //      digitalRead(ACT_MONGO) == 0 ? Serial.println("ABIERTO") : Serial.println("CERRADO") ;
    }
