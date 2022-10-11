@@ -2,8 +2,8 @@
 //#include "LCD_20X4.h"
 #include "PIN.h"
 #include<INDICADOR.h> // SE USA EN RED 
-#include "RED2.h"
-//#include "REDW.h"
+//#include "RED2.h"
+#include "REDW.h"
 #include "RFID.h"
 #include "MONGO.h"
 
