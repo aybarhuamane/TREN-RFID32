@@ -5,18 +5,29 @@
 
 //#define PLANTA3 // LABORAT
 //#define PLANTA2
-
-byte mac[] = { 0xDE, 0xAD, 0xBE, 0xEF, 0xFE, 0xED };
-// #define MYIPADDR 172,19,43,178
+uint8_t mac[] = {0x00,0x01,0x02,0x03,0x04,0x05};
+//const byte mac[] PROGMEM = { 0xDE, 0xAD, 0xBE, 0xEF, 0xFE, 0xED };
+//byte mac[] = { 0xDE, 0xAD, 0xBE, 0xEF, 0xFE, 0xED };
+//byte mac[] =  {0x8B, 0xAA, 0xB5, 0xA2, 0x14, 0xB0};
+//#define MYIPADDR 172,19,34,45
+//#define MYIPMASK 255,255,255,0
+//#define MYDNS 172,19,34,1
+//#define MYGW 172,19,34,1
+//
+// #define MYIPADDR 192,168,1,42
 // #define MYIPMASK 255,255,255,0
-// #define MYDNS 172,19,34,1
-// #define MYGW 172,19,34,1
+// #define MYDNS 192,168,1,1
+// #define MYGW 192,168,1,1
 
- #define MYIPADDR 10,10,0,42
- #define MYIPMASK 255,255,255,0
- #define MYDNS 10,10,0,1
- #define MYGW 10,10,0,1
-const char *mqtt_server = "10.10.0.40";
+//#define MYIPADDR 10,10,0,44
+//#define MYIPMASK 255,255,255,0
+//#define MYDNS 10,10,0,1
+//#define MYGW 10,10,0,1
+
+
+IPAddress myIP(10,10,0,43);
+IPAddress myDNS(10,10,0,1);
+const char *mqtt_server = "10.10.0.41";
 
 
 #if defined PLANTA
@@ -24,10 +35,10 @@ byte mac[] = { 0xDE, 0xAD, 0xBE, 0xEF, 0xFE, 0xED };
 
 // IPAddress ip(10, 10, 0, 51);
 // IPAddress myDns(10,10,0,1); 
-IPAddress ip(172, 19, 34,250); //172.19.34.17 - 250  //ESTA IP SERA ASIGNADO AL MODULO ETHERTNET 
+//IPAddress ip(172, 19, 34,250); //172.19.34.17 - 250  //ESTA IP SERA ASIGNADO AL MODULO ETHERTNET 
 //IPAddress myDns(172,24,34,1); //  172.19.34.1
 
-IPAddress myDns(172,19,20,31);
+//IPAddress myDns(172,19,20,31);
 //  172.19.34.1 puerta de enlace 
 
 // 
@@ -72,8 +83,6 @@ const char *mqtt_server = "10.10.0.100";
 
 
 #endif
-
-
 // MQTT
 EthernetClient espClient;
 PubSubClient client(espClient);
@@ -81,23 +90,17 @@ PubSubClient client(espClient);
 //#define SERVER "iotx.cloux.site"
 #define PORT 1883
 
-const char *mqtt_user = "adminx"; // Credentials mqtt user
-const char *mqtt_pass = "adminx"; // Credentials mqtt pass
-String clientId = "device_rfid2";
+const char *mqtt_user = "python"; //ssid de la red
+const char *mqtt_pass = "python$+"; //contraseña de la red
+#define clientId  "device-rfid"
+#define ESTACION "CULTURA"
+ // MQTT TOPIC
+const char *client_randon = clientId + (random(0xffff),HEX);
+#define TOPICO_RAIZ "device/" clientId "/estacion/" ESTACION "/data/"
+#define TOPICO_PUB_DATA1 TOPICO_RAIZ "buscar" 
+#define TOPICO_SUB_DATA1 TOPICO_RAIZ "encontrado"
 
  // MQTT TOPIC
-
-#define TOPICO_RAIZ "data/"
-#define TOPICO_PUB_DATA1 TOPICO_RAIZ "encontrado"
-#define TOPICO_SUB_DATA1 TOPICO_PUB_DATA1
-
-#define TOPICO_PUB_DATA2 TOPICO_RAIZ "buscar2"
-#define TOPICO_SUB_DATA2 TOPICO_PUB_DATA2
-
-//new collection  client 26/09
-#define TOPICO_PUB_DATA3 TOPICO_RAIZ "buscar3"
-#define TOPICO_SUB_DATA3 TOPICO_RAIZ  "grab"//"encontrado3"
-
 
 //MILLS
 long previousMillis;
@@ -120,17 +123,20 @@ int incremento =0;
 void main_ethernet()
 {
     Ethernet.init(CS_E); // ESP32 with Adafruit Featherwing Ethernet CS: 15
+
     while (!Serial)
     {
         ; // wait for serial port to connect. Needed for native USB port only
     }
     
-    Serial.println("Initialize Ethernet with DHCP:");
+    Serial.println("Initialize Ethernet with Red:");
     //Ethernet.begin(mac, 1000UL,1000UL);
+
+      Ethernet.begin(mac, myIP);
 
     if (Ethernet.begin(mac) == 0)
     {
-        Serial.println("Failed to configure Ethernet using DHCP");
+        Serial.println("Failed to configure Ethernet using Red");
             Serial.println("Reiniciando ...");
             delay(1500);
             ESP.restart();
@@ -156,17 +162,18 @@ void main_ethernet()
           // IPAddress gw(MYGW);
           // IPAddress sn(MYIPMASK);
 
-                IPAddress ip(MYIPADDR);
-                IPAddress dns(MYDNS);
-                IPAddress gw(MYGW);
-                IPAddress sn(MYIPMASK);
+          //      IPAddress ip(MYIPADDR);
+          //      IPAddress dns(MYDNS);
+          //      IPAddress gw(MYGW);
+          //      IPAddress sn(MYIPMASK);
 
-           Ethernet.begin(mac, ip, dns, gw, sn);
-          // Ethernet.begin(mac, ip);
+         //  Ethernet.begin(mac, ip, dns, gw, sn);
+        //   Ethernet.begin(mac, ip);
           // Serial.println("STATIC OK!");
-          // Ethernet.begin(mac, ip);
-        //  Ethernet.begin(mac, ip, myDns);
+           
 
+            Ethernet.begin(mac, myIP);
+        // Ethernet.begin(mac, ip, dns);
 
           Serial.print("MY IP address:");
           Serial.println(Ethernet.localIP());
@@ -175,45 +182,20 @@ void main_ethernet()
     }
 }
 
-void sendData() {
-
-  Serial.print("Attempting connecting server..");
-  // Create a random client ID
-  clientId += String(random(0xffff), HEX);
- 
-  if(client.connect(clientId.c_str(),mqtt_user, mqtt_pass)) {
-   client.publish(TOPICO_PUB_DATA1, "hola_esp32");
-    Serial.println("Enviado... ");
-    client.subscribe(TOPICO_PUB_DATA1);
-
- }
-  else
-  {
-      Serial.print("failed, rc=");
-      Serial.print(client.state());
-      Serial.println(" try again in 5 seconds");
-      ESP.restart();
-  }
-}
 
 void reconnect() {
 
   while (!client.connected()) {
 
     Serial.println("Intentando conexion MQTT");//Imprime cadena
-    clientId = clientId + String(random(0xffff), HEX);//Genera una cadena con valor random
 
-    if (client.connect(clientId.c_str(), mqtt_user, mqtt_pass)) {
+    if (client.connect(client_randon, mqtt_user, mqtt_pass)) {
       //if (client.connect(clientId.c_str())){
       Serial.println("Conexion a MQTT exitosa!!");//Imprime cadena
      // print_lcdc("SERVER CONNECTED !");
       // INDICA CONEXION MQTT EXITOSA
       parpadeo(false); 
-      client.subscribe(TOPICO_SUB_DATA1);//Suscripcion a topico
-      client.subscribe(TOPICO_SUB_DATA2);
-      client.subscribe(TOPICO_SUB_DATA3);
-      client.subscribe(TOPICO_PUB_DATA3); //activar si usa NA RELAY
-      //client.publish(TOPICO_PUB_DATA1, "BIEVENIDO");
+      client.subscribe(TOPICO_SUB_DATA1);   
 
     } else {
       Serial.print("Fallo la conexion ");//Imprime cadena
@@ -236,27 +218,27 @@ void reconnect() {
 }
 
 
-void loop_ethernet(){
-    auto link = Ethernet.linkStatus();
-    Serial.print("Link status: ");
-    switch (link)
-    {
-    case Unknown:
-        Serial.println("Unknown");
-        break;
-    case LinkON:
-        Serial.println("ON");
-        break;
-    case LinkOFF:
-        Serial.println("OFF");
-        break;
-    }
-    delay(1000);
+// void loop_ethernet(){
+//     auto link = Ethernet.linkStatus();
+//     Serial.print("Link status: ");
+//     switch (link)
+//     {
+//     case Unknown:
+//         Serial.println("Unknown");
+//         break;
+//     case LinkON:
+//         Serial.println("ON");
+//         break;
+//     case LinkOFF:
+//         Serial.println("OFF");
+//         break;
+//     }
+//     delay(1000);
 
-    if (millis() - previousMillis > INTERVAL)
-    {
-        sendData();
-        previousMillis = millis();
-    }
-    client.loop();
-}
+//     if (millis() - previousMillis > INTERVAL)
+//     {
+//         sendData();
+//         previousMillis = millis();
+//     }
+//     client.loop();
+// }

@@ -1,9 +1,12 @@
 // CORRECCION 14/09 00:30
 //#include "LCD_20X4.h"
+#include <Separador.h>
 #include "PIN.h"
 #include<INDICADOR.h> // SE USA EN RED 
-//#include "RED2.h"
-#include "REDW.h"
+//#include "RED2.h"  //DHCP
+//#include "REDW.h"  //WIFI
+//#include "REC_RFID.h"
+#include "RED_STATIC.h"
 #include "RFID.h"
 #include "MONGO.h"
 
@@ -17,7 +20,7 @@ void setup()
 
     Serial.begin(115200);
     PINES();
-
+   // bocina(4);
     main_ethernet();
 
  //SI SE CONECTA A LA RED CORRECTAMENTE  TITILEA 3 VECES
@@ -64,6 +67,7 @@ void loop()
     if(client.state()== 0){
     loop_rfid();
     relay_NC(); //mongo.h
+    ALERTA_ROJA();
     }
 
     client.loop();

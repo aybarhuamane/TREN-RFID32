@@ -9,8 +9,8 @@ char server[] = "httpbin.org";    // name address for Google (using DNS)
  
 // Enter a MAC address for your controller below.
 // Newer Ethernet shields have a MAC address printed on a sticker on the shield
-byte mac[] = { 0xDE, 0xAD, 0xBE, 0xEF, 0xFE, 0xED };
- 
+//byte mac[] = { 0xDE, 0xAD, 0xBE, 0xEF, 0xFE, 0xED };
+uint8_t mac[6] = {0x00,0x01,0x02,0x03,0x04,0x05};
 // Set the static IP address to use if the DHCP fails to assign
 
 // #define MYIPADDR 192,168,1,28
@@ -18,11 +18,14 @@ byte mac[] = { 0xDE, 0xAD, 0xBE, 0xEF, 0xFE, 0xED };
 // #define MYDNS 192,168,1,1
 // #define MYGW 192,168,1,1
  
- #define MYIPADDR 10,10,0,100
- #define MYIPMASK 255,255,255,0
- #define MYDNS 10,10,0,1
- #define MYGW 10,10,0,1
-
+//  #define MYIPADDR 10,10,0,100
+//  #define MYIPMASK 255,255,255,0
+//  #define MYDNS 10,10,0,1
+//  #define MYGW 10,10,0,1
+#define MYIPADDR 10,10,0,42
+#define MYIPMASK 255,255,255,0
+#define MYDNS 10,10,0,1
+#define MYGW 10,10,0,1
 
 //#define MYIPADDR 172,19,40,57
 //#define MYIPMASK 255,255,255,0
@@ -59,6 +62,7 @@ void setup() {
         Serial.println("DHCP OK!");
     }else{
         Serial.println("Failed to configure Ethernet using DHCP");
+       // ESP.restart();
         // Check for Ethernet hardware present
         if (Ethernet.hardwareStatus() == EthernetNoHardware) {
           Serial.println("Ethernet shield was not found.  Sorry, can't run without hardware. :(");

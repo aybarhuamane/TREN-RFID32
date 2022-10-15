@@ -1,10 +1,13 @@
 #include "Arduino.h"
 #include "SPI.h"
 // ETHERNET
+//#define CS_E 33
 #define CS_E 33
 // LED 
 #define ACT_MONGO 22 //RELAY
 #define IND1_MOONGO 21 //AZUL
+#define ALERTA 16
+#define REFID 17
 // BUZ
 #define BUZZER 4
 //RFID
@@ -25,6 +28,7 @@
         #define MISO_PIN_H 25     
 #endif
 
+
 void 
 PINES()
 {
@@ -32,11 +36,29 @@ PINES()
     pinMode(IND1_MOONGO,OUTPUT);
     pinMode(ACT_MONGO,OUTPUT);
     pinMode(16,OUTPUT); //SALIDA PIC
-    pinMode(17,OUTPUT); // SALIDA PIC
-   // pinMode(IND2_MOONGO,OUTPUT);
+    pinMode(ALERTA,OUTPUT); // SALIDA PIC
+    pinMode(REFID,OUTPUT); // SALIDA PIC
+    // pinMode(IND2_MOONGO,OUTPUT);
     digitalWrite(IND1_MOONGO,LOW); //INICIA EN OFF
-    digitalWrite(16,LOW); //SALIDA PIC
-    digitalWrite(17,LOW); // SALIDA PIC
-    digitalWrite(ACT_MONGO,LOW); // relay
+    digitalWrite(ALERTA,LOW); //SALIDA PIC
+    digitalWrite(REFID,HIGH); // ACTIVAMOS  RFID1
+
+     
+    // digitalWrite(17,LOW); // SALIDA PIC
+   // digitalWrite(ACT_MONGO,LOW); // relay  antes  14/10/2022
+
+
+    // digitalWrite(ALERTA,HIGH);
+    // delay(2000);
+    // digitalWrite(ALERTA,LOW);
+    //  delay(2000);
+
+    //      digitalWrite(ALERTA,HIGH);
+    // delay(2000);
+    // digitalWrite(ALERTA,LOW);
+    //  delay(2000);
+// pinMode(5,OUTPUT);
+//    digitalWrite(5,HIGH); 
+
     //init_lcd("Iniciando...",1);
 }

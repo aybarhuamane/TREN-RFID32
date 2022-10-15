@@ -6,44 +6,41 @@
 //const char* mqtt_server = "192.168.173.143";
 //const char* mqtt_server = "172.19.34.17";
 
- const char* ssid = "LINEA1_PRIVADO";
- const char* password = "M3tr0deL1m@2#17";
+//  const char* ssid = "LINEA1_PRIVADO";
+//  const char* password = "M3tr0deL1m@2#17";
+// const char* mqtt_server = "172.19.34.200";
+// const char *mqtt_user = "device-rfid"; //ssid de la red
+// const char *mqtt_pass = "device$+"; //contraseña de la red
 
+const char* ssid = "MOVISTAR_2019";
+const char* password = "movistar123$+";
+const char *mqtt_user = "python"; //ssid de la red
+const char *mqtt_pass = "python$+"; //contraseña de la red
+const char* mqtt_server = "192.168.1.81";
 
- //const char* ssid = "MOVISTAR_2019";
- //const char* password = "movistar123$+";
-
-//const char* ssid = "Wifi_Comedor";
-//const char* password = "movistar123";
+// const char* ssid = "Wifi_Comedor";
+// const char* password = "movistar123";
 //const char* mqtt_server = "192.168.1.81";
 //const char *mqtt_server = "192.168.16.101";
 //const char* mqtt_server = "localhost";
 //const char* mqtt_server = "192.168.173.143";
-const char* mqtt_server = "172.19.34.200";
-const char *mqtt_user = "device-rfid"; //ssid de la red
-const char *mqtt_pass = "device$+"; //contraseña de la red
+
 
 
 //PubSubClient mqttClient;
 //#define SERVER "iotx.cloux.site"
 #define PORT 1883
 
-String clientId = "device_rfid2";
-
+//String client=  "client12" +  String(random(0xffff));
+#define clientId  "device-rfid"
+#define ESTACION "CULTURA"
  // MQTT TOPIC
+const char *client_randon = clientId + (random(0xffff),HEX);
+#define TOPICO_RAIZ "device/" clientId "/estacion/" ESTACION "/data/"
+#define TOPICO_PUB_DATA1 TOPICO_RAIZ "buscar" 
+#define TOPICO_SUB_DATA1 TOPICO_RAIZ "encontrado"
 
-#define TOPICO_RAIZ "data/"
-#define TOPICO_PUB_DATA1 TOPICO_RAIZ "encontrado"
-#define TOPICO_SUB_DATA1 TOPICO_PUB_DATA1
 
-#define TOPICO_PUB_DATA2 TOPICO_RAIZ "buscar2"
-#define TOPICO_SUB_DATA2 TOPICO_PUB_DATA2
-
-//new collection  client 26/09
-#define TOPICO_PUB_DATA3 TOPICO_RAIZ "buscar3"
-#define TOPICO_SUB_DATA3 TOPICO_RAIZ "grab"
-#define TOPICO_SUB_DATA4 TOPICO_RAIZ "grab2"
-//MILLS
 long previousMillis;
 unsigned long beginMicros, endMicros;
 unsigned long byteCount = 0;
@@ -70,17 +67,17 @@ void reconnect() {
  while (!client.connected()) {
 
     Serial.println("Intentando conexion MQTT");//Imprime cadena
-    clientId = clientId + String(random(0xffff), HEX);//Genera una cadena con valor random
-    if (client.connect(clientId.c_str(), mqtt_user, mqtt_pass)) {
+    //clientId = clientId + String(random(0xffff), HEX);//Genera una cadena con valor random
+    if (client.connect(client_randon, mqtt_user, mqtt_pass)) {
       //if (client.connect(clientId.c_str())){
       Serial.println("Conexion a MQTT exitosa!!");//Imprime cadena
      // print_lcdc("SERVER CONNECTED !");
       // INDICA CONEXION MQTT EXITOSA
       //parpadeo(false); 
      client.subscribe(TOPICO_SUB_DATA1);//Suscripcion a topico
-      client.subscribe(TOPICO_SUB_DATA2);
-      client.subscribe(TOPICO_SUB_DATA3);
-      client.subscribe(TOPICO_SUB_DATA4);
+      // client.subscribe(TOPICO_SUB_DATA2);
+      // client.subscribe(TOPICO_SUB_DATA3);
+      // client.subscribe(TOPICO_SUB_DATA4);
      // client.subscribe(TOPICO_PUB_DATA3); //activar si usa NA RELAY
       //client.publish(TOPICO_PUB_DATA1, "BIEVENIDO");
 

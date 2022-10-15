@@ -1,8 +1,11 @@
 
 #include <Separador.h>
 
+unsigned long t1_m =0;
+
 
 bool act = true;
+bool act1;
 unsigned long t_m = 0;
 
 //#define ANTIGUO_PY   
@@ -25,6 +28,11 @@ String separar(String datosrecibidos, int i)
   // Serial.println("ELEMENTO SEPARADO3:"+ elemento3);
   return cadenas[i];
 }
+
+
+
+
+
 
 void callback_mongo(char *topic, byte *payload, unsigned int length)
 {
@@ -82,6 +90,26 @@ void callback_mongo(char *topic, byte *payload, unsigned int length)
 #elif defined NUEVO_PY
 // 26/9/22
 
+void ALERTA_ROJA()
+{
+      if(act1){
+     Serial.println("ON");
+     digitalWrite(ALERTA,HIGH);
+      
+    
+        //STADO GENERAL    
+          if(millis() - t1_m > 3000UL)
+      {
+          t1_m = millis(); // SETEAMOS
+          Serial.println("OFF");
+          digitalWrite(ALERTA,LOW);
+          act1 = false;
+      }
+}
+
+      // STADO GENERAL    AL INICIAR DESPUES DE 2SEG SE EJECUTA
+
+}
 void callback_mongo(char *topic, byte *payload, unsigned int length)
 {
   Serial.print("Path -> ");        // Imprime cadena
@@ -94,7 +122,7 @@ void callback_mongo(char *topic, byte *payload, unsigned int length)
   String miTopic = String(topic);             // Crea objeto de la clase String con el contenido de topic
   String miPayload = String((char *)payload); // Crea objeto de la clase String con el contenido de payload
 
-    if (miTopic.equals("data/grab"))
+    if (miTopic.equals(TOPICO_SUB_DATA1))
     { // la data regresa por este tramo
     
       if ( miPayload.equals("0"))
@@ -103,10 +131,11 @@ void callback_mongo(char *topic, byte *payload, unsigned int length)
         //RELAY CERRADO
         act =true;
         t_m = millis();
+        
       }
       else if ( miPayload.equals("1")) // BLACKLIST
       {
-       
+        
         Serial.println("tarjeta bloqueada \n");
         //  Serial.print("TARJETA ACEPTADA");
         //  print_lcdc("TARJETA ACEPTADA");
@@ -114,26 +143,15 @@ void callback_mongo(char *topic, byte *payload, unsigned int length)
        digitalWrite(ACT_MONGO, LOW); //RELAY_NC  ABIERTO
        act = false;
        t_m = millis();
+
+        act1 = true;
+         Serial.println("ON");
+         t1_m = millis();
       }
 
     }
 
-    else if (miTopic.equals("data/grab2"))
-    { // la data regresa por este tramo  
-    Serial.println("LEER GRAB \n");
-      if (miPayload.equals("0"))
-      {
-        Serial.println("tarjeta No bloqueada2 \n");
-        //RELAY CERRADO
-        act =true;
-        t_m = millis();
-      }
 
-
-    // Serial.println("STADO RELAY: " + String(digitalRead(ACT_MONGO))  );
-    //      digitalRead(ACT_MONGO) == 0 ? Serial.println("ABIERTO") : Serial.println("CERRADO") ;
-   }
-   
       
 }
   // END CALLBACK
@@ -158,18 +176,45 @@ void relay_NA()
 void relay_NC()
 {     //PIN.h init  LOW = RELAY CERRADO
       if(act){
-      digitalWrite(ACT_MONGO, HIGH); // CIERRA RFID2 SE MANTIENE
+        
+      digitalWrite(ACT_MONGO, HIGH); // CIERRA RFID2 SE MANTIENE ESCUCHANDO
+      digitalWrite(REFID,LOW);  // APAGAMOS EL RFID
       // digitalRead(ACT_MONGO) == 0 ? Serial.println("ABIERTO") : Serial.println("CERRADO") ;
       //despues de 2 segundos se resetea cambia  act = low
     }
+
       // STADO GENERAL    AL INICIAR DESPUES DE 2SEG SE EJECUTA
-          if(millis() - t_m > 1500UL) //EL TIEMPO QUE SE MANTENDRA ABIERTO  LUEGO SE RESETEARA
+          if(millis() - t_m > 3000UL) //EL TIEMPO QUE SE MANTENDRA ABIERTO  LUEGO SE RESETEARA
       {
           t_m = millis(); // SETEAMOS
           digitalWrite(ACT_MONGO,LOW); //ABIERTO RELAY
+          digitalWrite(REFID,HIGH); //REVIVIMOS EL RFID
+        mfrc522.PCD_Init(); // Init MFRC522
+        delay(4);           // Optional delay. Some board do need more time after init to be ready, see Readme
+        mfrc522.PCD_DumpVersionToSerial();
+
+
           //Serial.println("SETEAMOS");
          act = false;
       }
 }
 
+//old
+// void relay_NC()
+// {     //PIN.h init  LOW = RELAY CERRADO
+//       if(act){
+//       digitalWrite(ACT_MONGO, HIGH); // CIERRA RFID2 SE MANTIENE
+//       // digitalRead(ACT_MONGO) == 0 ? Serial.println("ABIERTO") : Serial.println("CERRADO") ;
+//       //despues de 2 segundos se resetea cambia  act = low
+//     }
+
+//       // STADO GENERAL    AL INICIAR DESPUES DE 2SEG SE EJECUTA
+//           if(millis() - t_m > 1500UL) //EL TIEMPO QUE SE MANTENDRA ABIERTO  LUEGO SE RESETEARA
+//       {
+//           t_m = millis(); // SETEAMOS
+//           digitalWrite(ACT_MONGO,LOW); //ABIERTO RELAY
+//           //Serial.println("SETEAMOS");
+//          act = false;
+//       }
+// }
 

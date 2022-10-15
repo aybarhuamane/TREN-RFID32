@@ -34,6 +34,7 @@ else if (ENABLE == false)
 void bocina(int cantidad){
 
     for (int x=0; x < cantidad ; x++){
+    Serial.println("SONANDO");
     digitalWrite(BUZZER,HIGH);
     delay(500);
     digitalWrite(BUZZER,LOW);
