@@ -11,3 +11,10 @@ void reconect_rfid()
         mfrc522.PCD_DumpVersionToSerial(); // Show details of PCD - MFRC522 Card Reader details
         Serial.println(F("Scan PICC to see UID, SAK, type, and data blocks..."));   
 }
+
+void antena_off()
+{
+        mfrc522.PCD_AntennaOff();
+        //PCD_Reset() 
+        // PCD_AntennaOn() 
+}

@@ -29,6 +29,36 @@ boolean compareArray(byte array1[], byte array2[])
         return (true);
 }
 
+void antena_off()
+{
+        mfrc522.PCD_AntennaOff();
+        //PCD_Reset() 
+        // PCD_AntennaOn() 
+}
+
+void antena_on()
+{
+        mfrc522.PCD_AntennaOn();
+        //PCD_Reset() 
+        // PCD_AntennaOn() 
+}
+
+void decidir_rfid()
+{
+
+
+        
+        if(stanby == true)
+        {
+            mfrc522.PCD_AntennaOn();
+
+        }
+        else if(stanby == false)
+        {
+                mfrc522.PCD_AntennaOff();
+        }
+
+}
 
 void loop_rfid(){
           
@@ -129,7 +159,7 @@ void loop_rfid(){
                                                
                               // bocina(1);// HACE RETARDO
                         }
-
+                        
                 }
         }
 }

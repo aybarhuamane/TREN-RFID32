@@ -1,5 +1,8 @@
 // CORRECCION 14/09 00:30
 //#include "LCD_20X4.h"
+// correct 22_02_2023 Completo
+bool stanby = false;
+#include "DEFINIR.h"
 #include <Separador.h>
 #include "PIN.h"
 #include<INDICADOR.h> // SE USA EN RED 
@@ -43,6 +46,7 @@ void setup()
         MRFID.begin(CLK_PIN_H, MISO_PIN_H, MOSI_PIN_H, SS_PIN_H); // //CLK,MISO,MOIS,SS.
         MRFID.begin(SS_PIN_H, OUTPUT);
         mfrc522.PCD_Init(); // Init MFRC522
+       // antena_off();
         delay(4);           // Optional delay. Some board do need more time after init to be ready, see Readme
         mfrc522.PCD_DumpVersionToSerial(); // Show details of PCD - MFRC522 Card Reader details
         Serial.println(F("Scan PICC to see UID, SAK, type, and data blocks..."));   
@@ -67,10 +71,13 @@ void loop()
     if(client.state()== 0){
     loop_rfid();
     relay_NC(); //mongo.h
+
     ALERTA_ROJA();
     }
 
     client.loop();
-
+    
     //Serial.println(digitalRead(ACT_MONGO));
 }
+
+    

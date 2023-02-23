@@ -10,36 +10,19 @@ from pymongo.errors import ConnectionFailure
 clientID = 'python_mongo' + str(random.randrange(100))
 usernameMQTT = 'python'
 passwordMQTT = 'python$+'
-
 #device/+/estacion/+/data/#
 TOPIC_RAIZ= "device/+/estacion/+/data/"
-
-
 TOPIC_SUBSCRIBE_B3 = TOPIC_RAIZ + "buscar"
-
 TOPIC_PUBLISH_E3 = "encontrado"
-
 IP = '127.0.0.1'
 ipBroker = IP
 portMQTT = 1883
-#topicSub = 'data/asa'  # +/#
-#topicSub = 'data/#'
+
 refer = 0
 # ------------------ MONGO ----------------------------------------
 
 DB_Mongo = 'hikary'
 coll_Mongo = 'blacklist'
-
-#url = 'mongodb://root:root@proyect.cloux.site:2700'
-#url = 'mongodb://root:root@localhost:2700'
-
-# url = "mongodb://root:root@mongo:27017"
-
-#conexion = MongoClient(host="proyect.cloux.site", port=2700, username="root", password="root", serverSelectionTimeoutMS=1)
-# conexion = MongoClient(host=IP, port =27017, username="operador",password="mimamamemima#123$$")
-
-# db = conexion[DB_Mongo]    #BD
-# registro = db[coll_Mongo]  #collection
 
 def mongo_conect():
    # conexion = MongoClient(host=IP, port =27017, username="operador",password="mimamamemima#123$$")
@@ -79,8 +62,7 @@ def on_message(client, userdata, msg):
    
     string_list = topico.split('/') #device/+/estacion/+/data/#
     num = len(string_list) -1
-    # if len(string_list) == 6:
-    #  print(string_list,len(string_list))
+
     consulta = registro.find({"items.nro_interno":dato},{"items.$": True})
     resultss = list(consulta)
     print('***********************************   ' + string_list[1] + '    **************************************')
@@ -88,9 +70,6 @@ def on_message(client, userdata, msg):
     #if topico == TOPIC_SUBSCRIBE_B3: #DECUID:
         grabando_topic = string_list[0]+'/'+ string_list[1]+'/'+ string_list[2]+'/'+ string_list[3]+'/'+ string_list[4]+'/' + TOPIC_PUBLISH_E3  #topic:  python/clientid1/encontrado3
         print("CONSULTANDO A MONGO: "+ topico)
-        #refe = 0
-        #dato_int = int(dato)  #str to int
-        #consulta = registro_2.find({"results.nro_interno":dato_int},{"results.$": True}) 
 
         print(dato)
         if len(resultss )==0:
@@ -106,22 +85,11 @@ def on_message(client, userdata, msg):
             pprint.pprint(i['items'][0]['nro_interno'])
             pprint.pprint(i['items'][0]['estado'])
           
-            ##pprint.pprint(i['results'][0]['status'])
-          #  client.publish(TOPIC_PUBLISH_G,i['items'][0]['estado']) quitar
             client.publish(grabando_topic,i['items'][0]['estado'])  #SE ENVIA POR OTRO TOPICO PARA EVITAR HACER BUCLES
             print("Se envio: " + str(grabando_topic)+" " + str(i['items'][0]['estado']))
           #  refe = 1  
-        
-
     mongo_conect().close()
     print("************************** conexion cerrada ******************************************* \n\n ")              
-   # client.publish("data/grab2",str(refe)) quitar
-    #parseo = str(refe)
-    #print("Fin parseo:" + parseo)
-  # client.publish(TOPIC_PUBLISH_G2,parseo)    quitar      
-
-
-
 client = mqtt.Client(clientID)
 client.username_pw_set(usernameMQTT, passwordMQTT)
 client.connect(ipBroker, portMQTT, 60)

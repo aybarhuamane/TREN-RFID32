@@ -1,38 +1,96 @@
-
+// 14/02/2023
 #include <SPI.h>
 #include <UIPEthernet.h>
 #include <UIPClient.h>
 #include "PubSubClient.h"
 
+
 UIPServer server = UIPServer(1883);
- 
-  uint8_t mac[6] = {0x00,0x01,0x02,0x03,0x04,0x05};
-//  IPAddress myIP(10,10,0,43);
+
+
+ //******************* ASUS SIMULADOR DOCKER ************ TORNIQUETE 5
+
+uint8_t mac[6] = {0x00,0x01,0x02,0x03,0x04,0x06};
+//   IPAddress myIP(192,168,1,66);
+//   IPAddress myDNS(192,168,1,1);
+//   IPAddress gw(192,168,1,1);
+//   IPAddress sn(255,255,255,0);
+//  const char *mqtt_server = "192.168.1.62";
+
+
+
+
+ //*******************DEVICE 1 ************ TORNIQUETE 5
+
+//   uint8_t mac[6] = {0x00,0x01,0x02,0x03,0x04,0x05};
+//  IPAddress myIP(10,10,19,50);
 //  IPAddress myDNS(10,10,0,1);
-//const char *mqtt_server = "10.10.0.41";
+//  IPAddress gw(10,10,0,1);
+//  IPAddress sn(255,255,0,0);
+// const char *mqtt_server = "10.10.0.41";
 
 
-  IPAddress myIP(172,19,38,204);
-  IPAddress myDNS(172,19,38,1);
+//  //*******************DEVICE 2*********** TORNIQUETE 4
+//   uint8_t mac[6] = {0x00,0x01,0x02,0x03,0x04,0x06};
+//  IPAddress myIP(10,10,19,55);  //10.52  libre
+//  IPAddress myDNS(10,10,0,1);
+//  IPAddress gw(10,10,0,1);
+//  IPAddress sn(255,255,0,0);
+// const char *mqtt_server = "10.10.0.41";
+
+//*************LABORATORIO
+// IPAddress myIP(172,19,40,104);
+// IPAddress myDNS(172,19,40,1);
+// const char *mqtt_server = "172.19.34.200";
+
+//************* SIO ADMINISTRATIVA
+
+
+IPAddress myIP(172,19,34,28);
+IPAddress myDNS(172,19,34,1);
+IPAddress gw(172,19,34,1);
+IPAddress sn(255,255,255,0);
 const char *mqtt_server = "172.19.34.200";
 
+//****** OPERATIVA
+//   IPAddress myIP(10,10,0,46);
+//   IPAddress myDNS(10,10,0,1);
+//   IPAddress gw(10,10,0,1);
+// IPAddress sn(255,255,255,0);
+// const char *mqtt_server = "10.10.0.45";
 
 // MQTT
 EthernetClient espClient;
 PubSubClient client(espClient);
+
 //PubSubClient mqttClient;
 //#define SERVER "iotx.cloux.site"
 #define PORT 1883
 
+ // MQTT TOPIC
 const char *mqtt_user = "python"; //ssid de la red
 const char *mqtt_pass = "python$+"; //contraseña de la red
-String clientId = "device12_" + String(random(0xffff),HEX);
-#define ESTACION "vsalvador"
- // MQTT TOPIC
+//************ DEVICE 1
+// String clientId = "device_1_" + String(random(0xffff),HEX);
+// #define ESTACION "cajadeagua"
+// #define TOPICO_RAIZ "device/" "device_1_" "/station/" ESTACION "/data/"
 
-#define TOPICO_RAIZ "device/" "device12" "/estacion/" ESTACION "/data/"
-#define TOPICO_PUB_DATA1 TOPICO_RAIZ "buscar" 
+// ************ DEVICE 2
+String clientId = "device_2" + (String)(random(0xffff),HEX);
+#define ESTACION "cajadeagua"
+#define TOPICO_RAIZ "device/" "device_2" "/station/" ESTACION "/data/"
+
+#define TOPICO_PUB_DATA1 TOPICO_RAIZ "buscar"
 #define TOPICO_SUB_DATA1 TOPICO_RAIZ "encontrado"
+
+
+//************DEVICE 2
+// String clientId = "device_2_" + String(random(0xffff),HEX);
+// #define ESTACION "cajadeagua"
+// #define TOPICO_RAIZ "device/" "device_2_" "/station/" ESTACION "/data/"
+
+// #define TOPICO_PUB_DATA1 TOPICO_RAIZ "buscar"
+// #define TOPICO_SUB_DATA1 TOPICO_RAIZ "encontrado"
 
 //MILLS
 long previousMillis;
@@ -53,7 +111,7 @@ int incremento =0;
         usamos Ethernet.init(15);
         */
 #endif
-void main_ethernet()
+bool main_ethernet()
 {
     UIPEthernet.init(33); // ESP32 with Adafruit Featherwing Ethernet CS: 15
 
@@ -61,11 +119,11 @@ void main_ethernet()
     {
         ; // wait for serial port to connect. Needed for native USB port only
     }
-    
+
     Serial.println("Initialize Ethernet with Red:");
     //Ethernet.begin(mac, 1000UL,1000UL);
-          UIPEthernet.begin(mac,myIP,myDNS);
-
+         // UIPEthernet.begin(mac,myIP,myDNS);
+          UIPEthernet.begin(mac,myIP,myDNS, gw, sn);
           Serial.print("MY IP address:");
           Serial.println(UIPEthernet.localIP());
           Serial.println(UIPEthernet.gatewayIP());
@@ -75,17 +133,16 @@ void main_ethernet()
   //  {
         if (UIPEthernet.linkStatus() == LinkOFF)
         {
-          Serial.println("Ethernet cable is not connected."); 
+          Serial.println("Ethernet cable is not connected.");
         }
-        UIPEthernet.begin(mac,myIP,myDNS); 
- //   } 
-     
+       // UIPEthernet.begin(mac,myIP,myDNS);
+
+ //   }
+
     if (UIPEthernet.linkStatus() == LinkON)
       {
         Serial.println("conexion correcta");
       }
-
-
 
     // if (UIPEthernet.begin(mac) == 0)
     // {
@@ -109,10 +166,10 @@ void main_ethernet()
     //         Serial.println("Ethernet cable is not connected.");
 
     //     }
-           
 
-        
-    
+
+
+    return true;
 }
 
 
@@ -121,33 +178,44 @@ void reconnect() {
   while (!client.connected()) {
 
     Serial.println("Intentando conexion MQTT");//Imprime cadena
-
+     main_ethernet();
     if (client.connect(clientId.c_str(), mqtt_user, mqtt_pass)) {
       //if (client.connect(clientId.c_str())){
       Serial.println("Conexion a MQTT exitosa!!");//Imprime cadena
      // print_lcdc("SERVER CONNECTED !");
-      // INDICA CONEXION MQTT EXITOSA
-      digitalWrite(ACT_MONGO,LOW);  //RELAY ABIERTO QUE NINGUN VALIDADOR LEA
-      
-        digitalWrite(REFID,HIGH);  // REVIVIMOS RFID
-      client.subscribe(TOPICO_SUB_DATA1);   
 
+     digitalWrite(ACT_MONGO, LOW); //ABRE EL CIRCUITO
+     //digitalWrite(ind_server,HIGH);
+     antena_on();
+
+      // INDICA CONEXION MQTT EXITOSA
+
+      //digitalWrite(ACT_MONGO,LOW);  //RELAY ABIERTO QUE NINGUN VALIDADOR LEA
+       stanby = true;
+      // digitalWrite(REFID,HIGH);  // REVIVIMOS RFID
+      client.subscribe(TOPICO_SUB_DATA1);
+      client.publish(TOPICO_SUB_DATA1, "1234567");
     } else {
       Serial.print("Fallo la conexion ");//Imprime cadena
       Serial.println(client.state());//Imprime error de la conexion
       Serial.print(" Se intentara denuevo en 5 segundos");//Imprime cadena
-      digitalWrite(ACT_MONGO,HIGH);  // RELAY CERRADO QUE EL OTRO VALIDADOR LEA
-       digitalWrite(REFID,LOW);  // APAGAMOS EL RFID
-      //delay(2000);//Espera 2 segundos para seguir intentando conectarse 
+   //   digitalWrite(ACT_MONGO,HIGH);  // RELAY CERRADO QUE EL OTRO VALIDADOR LEA
+      antena_off();
+      digitalWrite(ACT_MONGO, HIGH); // CIERRA RFID2 SE MANTIENE ESCUCHANDO
+      //digitalWrite(ind_server,LOW);
+
+      // digitalWrite(REFID,LOW);  // APAGAMOS EL RFID
+
+      //delay(2000);//Espera 2 segundos para seguir intentando conectarse
       incremento+=1;   //-> se movio al indicador.h
 
      // print_lcd("Reconnecting..");
 
       delay(2000);
-     if (incremento > 5){
+     if (incremento > 3){
       Serial.println("\nReiniciando por fallo MQTT SERVER...");
-        ESP.restart();
-        
+      ESP.restart();
+
      }
     }
   }

@@ -6,8 +6,8 @@
 // LED 
 #define ACT_MONGO 22 //RELAY
 #define IND1_MOONGO 21 //AZUL
-#define ALERTA 16
-#define REFID 17
+#define ALERTA 17
+#define REFID 16
 // BUZ
 #define BUZZER 4
 //RFID
@@ -28,6 +28,7 @@
         #define MISO_PIN_H 25     
 #endif
 
+#define ind_server 5
 
 void 
 PINES()
@@ -37,28 +38,13 @@ PINES()
     pinMode(ACT_MONGO,OUTPUT);
     pinMode(16,OUTPUT); //SALIDA PIC
     pinMode(ALERTA,OUTPUT); // SALIDA PIC
-    pinMode(REFID,OUTPUT); // SALIDA PIC
-    // pinMode(IND2_MOONGO,OUTPUT);
+    //pinMode(ind_server,OUTPUT);
+
     digitalWrite(IND1_MOONGO,LOW); //INICIA EN OFF
     digitalWrite(ALERTA,LOW); //SALIDA PIC
-    digitalWrite(REFID,HIGH); // ACTIVAMOS  RFID1
-
-     
-    // digitalWrite(17,LOW); // SALIDA PIC
-   // digitalWrite(ACT_MONGO,LOW); // relay  antes  14/10/2022
+    digitalWrite(ACT_MONGO,HIGH);  // INIT RELAY
+   // digitalWrite(ind_server,LOW); //INIT ENCENDIDO INDICADOR DE RED
+   // digitalWrite(REFID,HIGH); // ACTIVAMOS  RFID1
 
 
-    // digitalWrite(ALERTA,HIGH);
-    // delay(2000);
-    // digitalWrite(ALERTA,LOW);
-    //  delay(2000);
-
-    //      digitalWrite(ALERTA,HIGH);
-    // delay(2000);
-    // digitalWrite(ALERTA,LOW);
-    //  delay(2000);
-// pinMode(5,OUTPUT);
-//    digitalWrite(5,HIGH); 
-
-    //init_lcd("Iniciando...",1);
 }

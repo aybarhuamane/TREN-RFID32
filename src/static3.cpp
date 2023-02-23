@@ -5,9 +5,17 @@
 UIPServer server = UIPServer(1883);
  
   uint8_t mac[6] = {0x00,0x01,0x02,0x03,0x04,0x05};
-  IPAddress myIP(10,10,0,43);
-  IPAddress myDNS(10,10,0,1);
-const char *mqtt_server = "10.10.0.41";
+//   IPAddress myIP(10,10,0,46);
+//   IPAddress myDNS(10,10,0,1);
+// const char *mqtt_server = "10.10.0.45";
+
+
+IPAddress myIP(172,19,34,28);
+IPAddress myDNS(172,19,34,1);
+IPAddress gw(172,19,34,1);
+IPAddress sn(255,255,255,0);
+const char *mqtt_server = "172.19.34.200";
+
 // MQTT
 EthernetClient espClient;
 PubSubClient client(espClient);
@@ -20,8 +28,8 @@ const char *mqtt_pass = "python$+"; //contraseña de la red
 #define clientId  "device-rfid"
 #define ESTACION "vsalvador"
  // MQTT TOPIC
-const char *client_randon = clientId + (random(0xffff),HEX);
-#define TOPICO_RAIZ "device/" clientId "/estacion/" ESTACION "/data/"
+String client_randon = "device-rfid" + (String)(random(0xffff),HEX);
+#define TOPICO_RAIZ "device/" clientId "/station/" ESTACION "/data/"
 #define TOPICO_PUB_DATA1 TOPICO_RAIZ "buscar" 
 #define TOPICO_SUB_DATA1 TOPICO_RAIZ "encontrado"
 
@@ -40,13 +48,15 @@ void reconnect() {
 
     Serial.println("Intentando conexion MQTT");//Imprime cadena
 
-    if (client.connect(client_randon, mqtt_user, mqtt_pass)) {
+    if (client.connect(client_randon.c_str() , mqtt_user, mqtt_pass)) {
       //if (client.connect(clientId.c_str())){
       Serial.println("Conexion a MQTT exitosa!!");//Imprime cadena
      // print_lcdc("SERVER CONNECTED !");
       // INDICA CONEXION MQTT EXITOSA
-       client.publish(TOPICO_PUB_DATA1,"620547803"); 
-       client.subscribe(TOPICO_SUB_DATA1);   
+      Serial.println(TOPICO_PUB_DATA1);
+      client.subscribe(TOPICO_PUB_DATA1); 
+      client.publish(TOPICO_PUB_DATA1,"620547803"); 
+        
 
     } else {
       Serial.print("Fallo la conexion ");//Imprime cadena
@@ -118,6 +128,9 @@ void loop() {
         reconnect(); // Invoca la funcion "reconnect"
     }
      client.loop();
+
+     client.publish(TOPICO_PUB_DATA1,"620547803");
+     delay(300); 
   // if (UIPClient client = server.available()) {
 
   //   Serial.println("HOla");

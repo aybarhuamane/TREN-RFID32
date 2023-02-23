@@ -22,17 +22,21 @@ uint8_t mac[6] = {0x00,0x01,0x02,0x03,0x04,0x05};
 //  #define MYIPMASK 255,255,255,0
 //  #define MYDNS 10,10,0,1
 //  #define MYGW 10,10,0,1
-#define MYIPADDR 10,10,0,42
-#define MYIPMASK 255,255,255,0
-#define MYDNS 10,10,0,1
-#define MYGW 10,10,0,1
+
+// #define MYIPADDR 10,10,0,42
+// #define MYIPMASK 255,255,255,0
+// #define MYDNS 10,10,0,1
+// #define MYGW 10,10,0,1
 
 //#define MYIPADDR 172,19,40,57
 //#define MYIPMASK 255,255,255,0
 //#define MYDNS 172,19,40,1
 //#define MYGW 172,19,40,1
 
-
+#define MYIPADDR 172,19,34,57
+#define MYIPMASK 255,255,255,0
+#define MYDNS 172,19,34,1
+#define MYGW 172,19,34,1
 
 // Initialize the Ethernet client library
 // with the IP address and port of the server

@@ -9,6 +9,8 @@
         #define MISO_PIN_H 25   
         extern SPIClass MRFID;
         MFRC522 mfrc522(SS_PIN_H, RST_PIN_H); // Create MFRC522 instance
+
+#define relay 17
 void setup()
 {
 
@@ -24,7 +26,10 @@ void setup()
         mfrc522.PCD_DumpVersionToSerial(); // Show details of PCD - MFRC522 Card Reader details
         Serial.println(F("Scan PICC to see UID, SAK, type, and data blocks..."));   
 
-
+ pinMode(relay,OUTPUT);
+ digitalWrite(relay,HIGH);
+ delay(200);      
+  digitalWrite(relay,LOW); 
 }
 
 void loop()
