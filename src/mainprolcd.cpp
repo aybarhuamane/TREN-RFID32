@@ -24,21 +24,37 @@ void setup()
     Serial.begin(115200);
     PINES();
    // bocina(4);
-    main_ethernet();
+   // main_ethernet();
 
  //SI SE CONECTA A LA RED CORRECTAMENTE  TITILEA 3 VECES
     
-    if(suena==true)
-    {
-        //bocina(3);
-        Serial.println("CONECTADO");
-      //  init_lcd("Red Connected!",3); 
-    }
-    else{
-        //init_lcd("Fallo de conexion",3);
-         Serial.println("NO CONECTADO");
-      //  bocina(1);
-    }
+      UIPEthernet.init(33);
+        UIPEthernet.begin(mac,myIP,myDNS);
+  server.begin();
+
+  if (UIPEthernet.linkStatus() == LinkON)
+  {
+    Serial.println("conexion correcta");
+  }
+  else if (Ethernet.linkStatus() == LinkOFF)
+     {
+         Serial.println("Ethernet cable is not connected."); 
+     }
+    client.setServer(mqtt_server,PORT);
+    server.begin();
+
+
+    // if(suena==true)
+    // {
+    //     //bocina(3);
+    //     Serial.println("CONECTADO");
+    //   //  init_lcd("Red Connected!",3); 
+    // }
+    // else{
+    //     //init_lcd("Fallo de conexion",3);
+    //      Serial.println("NO CONECTADO");
+    //   //  bocina(1);
+    // }
 
 
     //RFID
@@ -54,28 +70,46 @@ void setup()
     // RED CONFIG
    
     //client.setClient(espClient);
-    client.setServer(mqtt_server,PORT);
+    //client.setServer(mqtt_server,PORT);
     client.setCallback(callback_mongo);
     Serial.println(F("MQTT client configured"));
-    previousMillis = millis();
-    beginMicros = micros();
+    // previousMillis = millis();
+    // beginMicros = micros();
 }
 
 void loop()
 {
-    if (client.connected() == false)
+
+ if (client.connected() == false)
     {
-        reconnect(); // Invoca la funcion "reconnect"
+        reconnect();
+
     }
     
-    if(client.state()== 0){
-    loop_rfid();
-    relay_NC(); //mongo.h
+         client.loop();
+         loop_rfid();
+         relay_NC(); //mongo.h
 
-    ALERTA_ROJA();
-    }
+          //ALERTA_ROJA();
 
-    client.loop();
+    // if (client.connected() == false)
+    // {
+    //     reconnect(); // Invoca la funcion "reconnect"
+    // }
+    // client.loop();
+    // loop_rfid();
+
+
+
+    //**************************** produce el error
+    // if(client.state()== 0){
+    // loop_rfid();
+    // relay_NC(); //mongo.h
+
+    // ALERTA_ROJA();
+    // }
+
+    //*************************
     
     //Serial.println(digitalRead(ACT_MONGO));
 }

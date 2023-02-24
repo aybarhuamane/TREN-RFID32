@@ -1,6 +1,7 @@
 // 14/02/2023
 #include <SPI.h>
 #include <UIPEthernet.h>
+#include <UIPServer.h>
 #include <UIPClient.h>
 #include "PubSubClient.h"
 
@@ -76,11 +77,17 @@ const char *mqtt_pass = "python$+"; //contraseña de la red
 // #define TOPICO_RAIZ "device/" "device_1_" "/station/" ESTACION "/data/"
 
 // ************ DEVICE 2
-String clientId = "device_2" + (String)(random(0xffff),HEX);
-#define ESTACION "cajadeagua"
-#define TOPICO_RAIZ "device/" "device_2" "/station/" ESTACION "/data/"
+// String clientId = "device_2" + (String)(random(0xffff),HEX);
+// #define ESTACION "cajadeagua"
+// #define TOPICO_RAIZ "device/" "device_2" "/station/" ESTACION "/data/"
 
-#define TOPICO_PUB_DATA1 TOPICO_RAIZ "buscar"
+// #define TOPICO_PUB_DATA1 TOPICO_RAIZ "buscar"
+// #define TOPICO_SUB_DATA1 TOPICO_RAIZ "encontrado"
+#define clientId  "device-rfid"
+#define ESTACION "vsalvador"
+String client_randon = "device-rfid" + (String)(random(0xffff),HEX);
+#define TOPICO_RAIZ "device/" clientId "/station/" ESTACION "/data/"
+#define TOPICO_PUB_DATA1 TOPICO_RAIZ "buscar" 
 #define TOPICO_SUB_DATA1 TOPICO_RAIZ "encontrado"
 
 
@@ -172,14 +179,33 @@ bool main_ethernet()
     return true;
 }
 
+bool main_ethernet2()
+{
+  UIPEthernet.init(33);
+  UIPEthernet.begin(mac,myIP,myDNS);
 
+  server.begin();
+
+  if (UIPEthernet.linkStatus() == LinkON)
+  {
+    Serial.println("conexion correcta");
+  }
+  if (Ethernet.linkStatus() == LinkOFF)
+ {
+     Serial.println("Ethernet cable is not connected."); 
+ }
+client.setServer(mqtt_server,PORT);
+server.begin();
+
+}
 void reconnect() {
 
   while (!client.connected()) {
 
     Serial.println("Intentando conexion MQTT");//Imprime cadena
-     main_ethernet();
-    if (client.connect(clientId.c_str(), mqtt_user, mqtt_pass)) {
+    // main_ethernet();
+    //  main_ethernet2(); borrado
+    if (client.connect(client_randon.c_str(), mqtt_user, mqtt_pass)) {
       //if (client.connect(clientId.c_str())){
       Serial.println("Conexion a MQTT exitosa!!");//Imprime cadena
      // print_lcdc("SERVER CONNECTED !");
@@ -194,7 +220,8 @@ void reconnect() {
        stanby = true;
       // digitalWrite(REFID,HIGH);  // REVIVIMOS RFID
       client.subscribe(TOPICO_SUB_DATA1);
-      client.publish(TOPICO_SUB_DATA1, "1234567");
+      client.subscribe(TOPICO_PUB_DATA1); 
+      client.publish(TOPICO_PUB_DATA1,"620547803"); 
     } else {
       Serial.print("Fallo la conexion ");//Imprime cadena
       Serial.println(client.state());//Imprime error de la conexion
@@ -211,8 +238,8 @@ void reconnect() {
 
      // print_lcd("Reconnecting..");
 
-      delay(2000);
-     if (incremento > 3){
+      delay(1000);
+     if (incremento > 5){
       Serial.println("\nReiniciando por fallo MQTT SERVER...");
       ESP.restart();
 

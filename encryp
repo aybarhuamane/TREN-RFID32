@@ -1,0 +1,3 @@
+pip install pyarmor
+pyarmor licenses --expired 2023-05-17 micropro
+pyarmor obfuscate --with-license licenses/micropro/license.lic BIN.py

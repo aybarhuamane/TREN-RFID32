@@ -7,6 +7,7 @@
 #define ACT_MONGO 22 //RELAY
 #define IND1_MOONGO 21 //AZUL
 #define ALERTA 17
+#define intermitente 15
 #define REFID 16
 // BUZ
 #define BUZZER 4
@@ -35,6 +36,7 @@ PINES()
 {
     pinMode(BUZZER,OUTPUT);
     pinMode(IND1_MOONGO,OUTPUT);
+    pinMode(intermitente,OUTPUT);
     pinMode(ACT_MONGO,OUTPUT);
     pinMode(16,OUTPUT); //SALIDA PIC
     pinMode(ALERTA,OUTPUT); // SALIDA PIC

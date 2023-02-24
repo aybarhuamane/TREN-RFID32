@@ -3,7 +3,7 @@
 //#include <RED.h>
 
 #define SECONDS 1000UL
-#define PERIODO_SENSADO 2*SECONDS   // sensado cada 5 seconds
+#define PERIODO_SENSADO 1.5*SECONDS   // sensado cada 5 seconds
 unsigned long tiempo=0;             // tiempo grabado
 char* data[4];
 int codigo;
@@ -154,7 +154,7 @@ void loop_rfid(){
                                 Serial.println("\n Se envio:" + String(TOPICO_PUB_DATA1)+ " " + miActualUID_DEC);
                                 client.publish(TOPICO_PUB_DATA1,miActualUID_DEC.c_str()); //CONSULTAMOS A MONGO EL DATO LEIDO
                                 tiempo = millis();
-
+                                mfrc522.PICC_HaltA();
 
                                                
                               // bocina(1);// HACE RETARDO

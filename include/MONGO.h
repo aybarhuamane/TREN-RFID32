@@ -186,13 +186,14 @@ void relay_NC()
       // digitalRead(ACT_MONGO) == 0 ? Serial.println("ABIERTO") : Serial.println("CERRADO") ;
       //despues de 2 segundos se resetea cambia  act = low
     
-
+      digitalWrite(intermitente,HIGH);
       // STADO GENERAL    AL INICIAR DESPUES DE 2SEG SE EJECUTA
       //ANTERIOR 3SEGUNDOS
           if(millis() - t_m > 2000UL) //EL TIEMPO QUE SE MANTENDRA ABIERTO  LUEGO SE RESETEARA
       {
           t_m = millis(); // SETEAMOS
           digitalWrite(ACT_MONGO,LOW); //ABIERTO RELAY
+          digitalWrite(intermitente,LOW);
           antena_on();
       //     digitalWrite(REFID,HIGH); //REVIVIMOS EL RFID
       //   mfrc522.PCD_Init(); // Init MFRC522
