@@ -11,7 +11,7 @@ UIPServer server = UIPServer(1883);
 
  //******************* ASUS SIMULADOR DOCKER ************ TORNIQUETE 5
 
-uint8_t mac[6] = {0x00,0x01,0x02,0x03,0x04,0x06};
+
 //   IPAddress myIP(192,168,1,66);
 //   IPAddress myDNS(192,168,1,1);
 //   IPAddress gw(192,168,1,1);
@@ -32,12 +32,17 @@ uint8_t mac[6] = {0x00,0x01,0x02,0x03,0x04,0x06};
 
 
 //  //*******************DEVICE 2*********** TORNIQUETE 4
-//   uint8_t mac[6] = {0x00,0x01,0x02,0x03,0x04,0x06};
-//  IPAddress myIP(10,10,19,55);  //10.52  libre
-//  IPAddress myDNS(10,10,0,1);
-//  IPAddress gw(10,10,0,1);
-//  IPAddress sn(255,255,0,0);
-// const char *mqtt_server = "10.10.0.41";
+ //uint8_t mac[6] = {0x00,0x01,0x02,0x03,0x04,0x06};
+ uint8_t mac[6] = {0x00,0x01,0x02,0x03,0x04,0x03};
+ IPAddress myIP(10,10,19,21);  //10.52  libre
+ IPAddress myDNS(10,10,19,1);
+ IPAddress gw(10,10,19,1);
+ IPAddress sn(255,255,0,0);
+const char *mqtt_server = "10.10.0.41";
+
+#define clientId  "TOR3"
+#define ESTACION "CAA"
+String client_randon = "TOR3" + (String)(random(0xffff),HEX);
 
 //*************LABORATORIO
 // IPAddress myIP(172,19,40,104);
@@ -47,11 +52,11 @@ uint8_t mac[6] = {0x00,0x01,0x02,0x03,0x04,0x06};
 //************* SIO ADMINISTRATIVA
 
 
-IPAddress myIP(172,19,34,28);
-IPAddress myDNS(172,19,34,1);
-IPAddress gw(172,19,34,1);
-IPAddress sn(255,255,255,0);
-const char *mqtt_server = "172.19.34.200";
+// IPAddress myIP(172,19,34,28);
+// IPAddress myDNS(172,19,34,1);
+// IPAddress gw(172,19,34,1);
+// IPAddress sn(255,255,255,0);
+// const char *mqtt_server = "172.19.34.200";
 
 //****** OPERATIVA
 //   IPAddress myIP(10,10,0,46);
@@ -83,9 +88,7 @@ const char *mqtt_pass = "python$+"; //contraseña de la red
 
 // #define TOPICO_PUB_DATA1 TOPICO_RAIZ "buscar"
 // #define TOPICO_SUB_DATA1 TOPICO_RAIZ "encontrado"
-#define clientId  "device-rfid"
-#define ESTACION "vsalvador"
-String client_randon = "device-rfid" + (String)(random(0xffff),HEX);
+
 #define TOPICO_RAIZ "device/" clientId "/station/" ESTACION "/data/"
 #define TOPICO_PUB_DATA1 TOPICO_RAIZ "buscar" 
 #define TOPICO_SUB_DATA1 TOPICO_RAIZ "encontrado"
@@ -203,6 +206,7 @@ void reconnect() {
   while (!client.connected()) {
 
     Serial.println("Intentando conexion MQTT");//Imprime cadena
+    digitalWrite(intermitente,HIGH); // PINTA EL X HASTA QUE SE ESTABLEZCA LA CONEXION CORRECTA
     // main_ethernet();
     //  main_ethernet2(); borrado
     if (client.connect(client_randon.c_str(), mqtt_user, mqtt_pass)) {
@@ -210,10 +214,12 @@ void reconnect() {
       Serial.println("Conexion a MQTT exitosa!!");//Imprime cadena
      // print_lcdc("SERVER CONNECTED !");
 
-     digitalWrite(ACT_MONGO, LOW); //ABRE EL CIRCUITO
+     //digitalWrite(ACT_MONGO, LOW); //ABRE EL CIRCUITO
+     digitalWrite(ACT_MONGO, HIGH); //ABRE EL CIRCUITO
+     digitalWrite(intermitente,LOW); // DESPINTA CUANDO YA SE CONECTO
      //digitalWrite(ind_server,HIGH);
      antena_on();
-
+     
       // INDICA CONEXION MQTT EXITOSA
 
       //digitalWrite(ACT_MONGO,LOW);  //RELAY ABIERTO QUE NINGUN VALIDADOR LEA
@@ -221,14 +227,15 @@ void reconnect() {
       // digitalWrite(REFID,HIGH);  // REVIVIMOS RFID
       client.subscribe(TOPICO_SUB_DATA1);
       client.subscribe(TOPICO_PUB_DATA1); 
-      client.publish(TOPICO_PUB_DATA1,"620547803"); 
+      client.publish(TOPICO_PUB_DATA1,"12345678"); 
     } else {
       Serial.print("Fallo la conexion ");//Imprime cadena
       Serial.println(client.state());//Imprime error de la conexion
       Serial.print(" Se intentara denuevo en 5 segundos");//Imprime cadena
    //   digitalWrite(ACT_MONGO,HIGH);  // RELAY CERRADO QUE EL OTRO VALIDADOR LEA
       antena_off();
-      digitalWrite(ACT_MONGO, HIGH); // CIERRA RFID2 SE MANTIENE ESCUCHANDO
+      //digitalWrite(ACT_MONGO, HIGH); // CIERRA RFID2 SE MANTIENE ESCUCHANDO
+      digitalWrite(ACT_MONGO, LOW); // CIERRA RFID2 SE MANTIENE ESCUCHANDO
       //digitalWrite(ind_server,LOW);
 
       // digitalWrite(REFID,LOW);  // APAGAMOS EL RFID
@@ -247,7 +254,6 @@ void reconnect() {
     }
   }
 }
-
 
 // void loop_ethernet(){
 //     auto link = Ethernet.linkStatus();

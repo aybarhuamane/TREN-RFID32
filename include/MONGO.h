@@ -92,26 +92,27 @@ void callback_mongo(char *topic, byte *payload, unsigned int length)
 
 void ALERTA_ROJA()
 {
-    //   if(act1){
-    //  Serial.println("ON");
-    //  digitalWrite(ALERTA,HIGH);
+      if(act1){
+     Serial.println("ON");
+     digitalWrite(ALERTA,HIGH);
+     digitalWrite(intermitente,HIGH);
       
-    
     //     //STADO GENERAL    
-    //       if(millis() - t1_m > 3000UL)
-    //   {
-    //       t1_m = millis(); // SETEAMOS
-    //       Serial.println("OFF");
-    //       digitalWrite(ALERTA,LOW);
-    //       act1 = false;
-    //   }
+          if(millis() - t1_m > 3000UL)
+      {
+          t1_m = millis(); // SETEAMOS
+          Serial.println("OFF");
+          digitalWrite(ALERTA,LOW);
+          digitalWrite(intermitente,LOW);
+          act1 = false;
+      }
 
 
-// }
+ }
   //ELSE  ALERTA 
-  digitalWrite(ALERTA,HIGH);
-  delay(3000);
-  digitalWrite(ALERTA,LOW);
+  // digitalWrite(ALERTA,HIGH);
+  // delay(3000);
+  // digitalWrite(ALERTA,LOW);
       // STADO GENERAL    AL INICIAR DESPUES DE 2SEG SE EJECUTA
 
 }
@@ -145,7 +146,8 @@ void callback_mongo(char *topic, byte *payload, unsigned int length)
         //  Serial.print("TARJETA ACEPTADA");
         //  print_lcdc("TARJETA ACEPTADA");
        //digitalWrite(ACT_MONGO, HIGH); //RELAY_NA- sigue abierto
-       digitalWrite(ACT_MONGO, LOW); //RELAY_NC  ABIERTO
+       // digitalWrite(ACT_MONGO, LOW); //RELAY_NC  ABIERTO
+       digitalWrite(ACT_MONGO, HIGH); //RELAY_NC  ABIERTO
        act = false;
        t_m = millis();
 
@@ -180,25 +182,19 @@ void relay_NC()
 {     //PIN.h init  LOW = RELAY CERRADO
       if(act){
       antena_off();
-      digitalWrite(ACT_MONGO, HIGH); // CIERRA RFID2 SE MANTIENE ESCUCHANDO
-      // digitalWrite(REFID,LOW);  // APAGAMOS EL RFID
-       
-      // digitalRead(ACT_MONGO) == 0 ? Serial.println("ABIERTO") : Serial.println("CERRADO") ;
-      //despues de 2 segundos se resetea cambia  act = low
-    
-      digitalWrite(intermitente,HIGH);
+      //digitalWrite(ACT_MONGO, HIGH); // CIERRA RFID2 SE MANTIENE ESCUCHANDO
+      digitalWrite(ACT_MONGO, LOW); // CIERRA RFID2 SE MANTIENE ESCUCHANDO
+
+      //digitalWrite(intermitente,HIGH);
       // STADO GENERAL    AL INICIAR DESPUES DE 2SEG SE EJECUTA
       //ANTERIOR 3SEGUNDOS
           if(millis() - t_m > 2000UL) //EL TIEMPO QUE SE MANTENDRA ABIERTO  LUEGO SE RESETEARA
       {
           t_m = millis(); // SETEAMOS
-          digitalWrite(ACT_MONGO,LOW); //ABIERTO RELAY
-          digitalWrite(intermitente,LOW);
+          //digitalWrite(ACT_MONGO,LOW); //ABIERTO RELAY
+          digitalWrite(ACT_MONGO,HIGH); //ABIERTO RELAY
+       //digitalWrite(intermitente,LOW);
           antena_on();
-      //     digitalWrite(REFID,HIGH); //REVIVIMOS EL RFID
-      //   mfrc522.PCD_Init(); // Init MFRC522
-      //   delay(4);           // Optional delay. Some board do need more time after init to be ready, see Readme
-      //  mfrc522.PCD_DumpVersionToSerial();
 
 
           //Serial.println("SETEAMOS");

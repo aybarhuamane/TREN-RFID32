@@ -29,7 +29,8 @@ void setup()
  //SI SE CONECTA A LA RED CORRECTAMENTE  TITILEA 3 VECES
     
       UIPEthernet.init(33);
-        UIPEthernet.begin(mac,myIP,myDNS);
+      UIPEthernet.begin(mac,myIP,myDNS, gw, sn);
+     // UIPEthernet.begin(mac,myIP,myDNS);
   server.begin();
 
   if (UIPEthernet.linkStatus() == LinkON)
@@ -43,7 +44,7 @@ void setup()
     client.setServer(mqtt_server,PORT);
     server.begin();
 
-
+   // antena_off(); // 25/02
     // if(suena==true)
     // {
     //     //bocina(3);
@@ -90,7 +91,7 @@ void loop()
          loop_rfid();
          relay_NC(); //mongo.h
 
-          //ALERTA_ROJA();
+         ALERTA_ROJA();
 
     // if (client.connected() == false)
     // {
