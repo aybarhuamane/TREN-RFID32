@@ -154,7 +154,7 @@ void loop_rfid(){
                                 Serial.println("\n Se envio:" + String(TOPICO_PUB_DATA1)+ " " + miActualUID_DEC);
                                 client.publish(TOPICO_PUB_DATA1,miActualUID_DEC.c_str()); //CONSULTAMOS A MONGO EL DATO LEIDO
                                 tiempo = millis();
-                                mfrc522.PICC_HaltA();
+                               // mfrc522.PICC_HaltA();
 
                                                
                               // bocina(1);// HACE RETARDO

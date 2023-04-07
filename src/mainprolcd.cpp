@@ -12,7 +12,7 @@ bool stanby = false;
 #include "RED_STATIC.h"
 #include "RFID.h"
 #include "MONGO.h"
-
+#include <esp_task_wdt.h> //22/03
 unsigned long t =0;
 // bool printWebData = true; // set to false for better speed measurement
 
@@ -67,11 +67,27 @@ void setup()
         delay(4);           // Optional delay. Some board do need more time after init to be ready, see Readme
         mfrc522.PCD_DumpVersionToSerial(); // Show details of PCD - MFRC522 Card Reader details
         Serial.println(F("Scan PICC to see UID, SAK, type, and data blocks..."));   
-
+        
+        byte version = mfrc522.PCD_ReadRegister(mfrc522.VersionReg);
+        if ((version == 0x00) || (version == 0xFF))
+        {
+            Serial.println(F("WARNING: PEPE Communication failure, is the MFRC522 properly connected?"));
+             digitalWrite(rfid_led,LOW);
+        }
+        else{
+          digitalWrite(rfid_led,HIGH);
+        }
     // RED CONFIG
    
     //client.setClient(espClient);
     //client.setServer(mqtt_server,PORT);
+    
+  //Habilita o watchdog configurando o timeout para 4 segundos /22/03/2023
+    // esp_task_wdt_init(60, true);
+    // esp_task_wdt_add(NULL);
+      //Habilita o watchdog configurando o timeout para 4 segundos
+    esp_task_wdt_init(15, true);
+    esp_task_wdt_add(NULL);
     client.setCallback(callback_mongo);
     Serial.println(F("MQTT client configured"));
     // previousMillis = millis();
@@ -92,6 +108,9 @@ void loop()
          relay_NC(); //mongo.h
 
          ALERTA_ROJA();
+
+  //Reseta o temporizador do watchdog
+  esp_task_wdt_reset();  //22/03/2023
 
     // if (client.connected() == false)
     // {

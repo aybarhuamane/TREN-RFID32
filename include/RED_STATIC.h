@@ -32,17 +32,17 @@ UIPServer server = UIPServer(1883);
 
 
 //  //*******************DEVICE 2*********** TORNIQUETE 4
- //uint8_t mac[6] = {0x00,0x01,0x02,0x03,0x04,0x06};
- uint8_t mac[6] = {0x00,0x01,0x02,0x03,0x04,0x03};
- IPAddress myIP(10,10,19,21);  //10.52  libre
+
+ uint8_t mac[6] = {0x00,0x01,0x02,0x03,0x04,0x02};
+ IPAddress myIP(10,10,19,20);  //10.52  libre
  IPAddress myDNS(10,10,19,1);
  IPAddress gw(10,10,19,1);
  IPAddress sn(255,255,0,0);
 const char *mqtt_server = "10.10.0.41";
 
-#define clientId  "TOR3"
-#define ESTACION "CAA"
-String client_randon = "TOR3" + (String)(random(0xffff),HEX);
+#define clientId  "01002"
+#define ESTACION "19"
+String client_randon = "01002_" + (String)(random(0xffff),HEX);
 
 //*************LABORATORIO
 // IPAddress myIP(172,19,40,104);
@@ -51,8 +51,10 @@ String client_randon = "TOR3" + (String)(random(0xffff),HEX);
 
 //************* SIO ADMINISTRATIVA
 
-
-// IPAddress myIP(172,19,34,28);
+// #define clientId  "SIO"
+// #define ESTACION "SIO-"
+// String client_randon = "SIO-" + (String)(random(0xffff),HEX);
+// IPAddress myIP(172,19,34,80);
 // IPAddress myDNS(172,19,34,1);
 // IPAddress gw(172,19,34,1);
 // IPAddress sn(255,255,255,0);

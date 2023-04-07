@@ -11,12 +11,14 @@
         MFRC522 mfrc522(SS_PIN_H, RST_PIN_H); // Create MFRC522 instance
 
 #define relay 17
+#define led_rfid 13
 void setup()
 {
 
     Serial.begin(115200);
+    pinMode(led_rfid,OUTPUT);
     while (!Serial); 
-//pinMode(BUZZER,OUTPUT);
+ 
     //RFID
 
         MRFID.begin(CLK_PIN_H, MISO_PIN_H, MOSI_PIN_H, SS_PIN_H); // //CLK,MISO,MOIS,SS.
@@ -24,7 +26,17 @@ void setup()
         mfrc522.PCD_Init(); // Init MFRC522
         delay(4);           // Optional delay. Some board do need more time after init to be ready, see Readme
         mfrc522.PCD_DumpVersionToSerial(); // Show details of PCD - MFRC522 Card Reader details
-        Serial.println(F("Scan PICC to see UID, SAK, type, and data blocks..."));   
+        Serial.println(F("Scan PICC to see UID, SAK, type, and data blocks...")); 
+        // ENCIENDE LED INDICANDO QUE COMUNICA
+        byte version = mfrc522.PCD_ReadRegister(mfrc522.VersionReg);
+        if ((version == 0x00) || (version == 0xFF))
+        {
+            Serial.println(F("WARNING: PEPE Communication failure, is the MFRC522 properly connected?"));
+             digitalWrite(led_rfid,LOW);
+        }
+        else{
+          digitalWrite(led_rfid,HIGH);
+        }
 
  pinMode(relay,OUTPUT);
  digitalWrite(relay,HIGH);
@@ -46,7 +58,7 @@ if ( mfrc522.PICC_IsNewCardPresent()) {
 
                   }
                 //  bocina(1);
-                  delay(1000);
+               //   delay(1000);
                  // mfrc522.PICC_DumpToSerial(&(mfrc522.uid));
             }
             

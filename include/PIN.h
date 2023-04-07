@@ -9,6 +9,7 @@
 #define ALERTA 17
 #define intermitente 15
 #define REFID 16
+#define rfid_led 13
 // BUZ
 #define BUZZER 4
 //RFID
@@ -35,6 +36,7 @@ void
 PINES()
 {
     pinMode(BUZZER,OUTPUT);
+    pinMode(rfid_led,OUTPUT);
     pinMode(IND1_MOONGO,OUTPUT);
     pinMode(intermitente,OUTPUT);
     pinMode(ACT_MONGO,OUTPUT);
